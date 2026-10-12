@@ -1,0 +1,27 @@
+Justin Sun Prize Problem JSP-000690 Formalization
+Copyright 2026 formalization contributors (GitHub: @qingsongcui).
+
+This product includes software and formal mathematical statements developed by
+The Formal Conjectures Authors (Google DeepMind), licensed under the Apache
+License, Version 2.0:
+- Repository: https://github.com/google-deepmind/formal-conjectures
+- Pinned commit: 2067d8bb82058f40ccbd20a14fb94502434ea9eb
+- Ported hypergraph definitions:
+  FormalConjecturesForMathlib/Combinatorics/Hypergraph/Finite.lean
+  (SHA256: 0823fba654c8fd849c821338e6624aefac6935a92836523dde9eb6524874949a)
+- Pinned reference challenge statement:
+  FormalConjectures/ErdosProblems/834.lean
+  (SHA256: 626258ec807262bd2a43bb6e6a923273fbdc85443e170fa703d5b33efc55583f)
+
+Mathematical Result Attribution:
+The mathematical discovery and explicit witness construction (the 9-vertex,
+22-edge 3-uniform 3-critical hypergraph with minimum degree 7) are due to:
+  Ruiliang Li (Department of Mathematical Sciences, Tsinghua University)
+  "On an Erdős–Lovász problem: 3-critical 3-graphs of minimum degree 7"
+  arXiv:2512.24850 [cs.DM] (December 2025), Theorem 4.1, display (5).
+All solver credit for the underlying mathematics belongs to the paper's author.
+
+AI Assistance Disclosure:
+Proof script generation, decidable instance construction for kernel-level
+reduction, and automated verification harness tooling were developed with the
+assistance of Oh My Pi (OMP) AI coding tools.

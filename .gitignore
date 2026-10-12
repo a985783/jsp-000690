@@ -1,3 +1,6 @@
 /.lake/
 *.olean
 *.ilean
+# Private audit scratch: local API snapshots / fetched docs, not part of submission.
+# Left untracked so the designated .gitignore owner can decide the final rule.
+/.audit/

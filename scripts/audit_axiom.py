@@ -8,10 +8,17 @@ Enforced rules (Justin Sun Prize PR template / docs/verification.md):
     `debug.skipKernelTC`, `implemented_by`/`extern` are disqualifying;
   * only `propext`, `Classical.choice`, `Quot.sound` are standard foundations.
 
-FAIL-CLOSED: any outcome that is not an unambiguous clean parse exits non-zero.
-A parse failure must never be reported as an accepted proof.
+TARGET-BOUND & FAIL-CLOSED:
+  * output regex binds specifically to the target theorem identifier
+    (e.g. `'Erdos834.erdos_834.parts.ii'` in single quotes);
+  * an axiom list for a mismatched or wrong declaration is NEVER accepted;
+  * any parse failure, compiler warning about sorry, custom axiom, or forbidden
+    axiom exits non-zero.
 
-Exit codes: 0 accepted, 1 rejected, 2 could-not-determine.
+Exit codes:
+  0: accepted (clean proof with empty or standard-only axioms)
+  1: rejected (forbidden axiom, custom axiom, or elaboration failure)
+  2: could-not-determine / indeterminate parse failure
 """
 
 from __future__ import annotations
@@ -31,8 +38,10 @@ FORBIDDEN_HINT = re.compile(
     r"sorry|admit|trustCompiler|skipKernelTC|implemented_by|extern|native_decide"
 )
 
-NO_AXIOM_PAT = re.compile(r"does not depend on any axioms")
-AXIOM_LIST_PAT = re.compile(r"depends on axioms:\s*\[(.*?)\]", re.S)
+
+def get_target_candidates(module: str, theorem: str) -> list[str]:
+    """Require the exact fully qualified declaration passed to #print axioms."""
+    return [theorem]
 
 
 def run(module: str, theorem: str) -> tuple[int, str]:
@@ -41,52 +50,180 @@ def run(module: str, theorem: str) -> tuple[int, str]:
         fh.write(code)
         tmp = Path(fh.name)
     try:
-        res = subprocess.run(["lake", "env", "lean", str(tmp)],
-                             cwd=ROOT, capture_output=True, text=True, timeout=3600)
+        res = subprocess.run(
+            ["lake", "env", "lean", str(tmp)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=3600,
+        )
         return res.returncode, res.stdout + res.stderr
     finally:
         tmp.unlink(missing_ok=True)
 
 
-def classify(theorem: str, rc: int, output: str) -> tuple[str, int, dict]:
+def classify(theorem: str, rc: int, output: str, module: str = "") -> tuple[str, int, dict]:
     flat = " ".join(output.split())
     info: dict = {"theorem": theorem, "axioms": [], "raw": flat}
 
     if rc != 0:
         info["error"] = flat
         return "ELABORATION_FAILED", 1, info
-    if re.search(r"declaration uses 'sorry'", flat):
+
+    if re.search(r"\bdeclaration uses 'sorry'\b", flat) or "declaration uses 'sorry'" in flat:
         info["axioms"] = ["sorryAx(implied by compiler warning)"]
         return "REJECTED_FORBIDDEN_AXIOM", 1, info
-    if NO_AXIOM_PAT.search(flat):
+
+    if re.search(r"\berror:\b", flat):
+        info["error"] = flat
+        return "ELABORATION_FAILED", 1, info
+
+    # Build target-bound patterns
+    cands = get_target_candidates(module, theorem)
+    escaped_names = "|".join(re.escape(c) for c in cands)
+    target_re = rf"'(?:{escaped_names})'"
+
+    no_axiom_pat = re.compile(rf"{target_re}\s+does not depend on any axioms")
+    axiom_list_pat = re.compile(rf"{target_re}\s+depends on axioms:\s*\[(.*?)\]", re.S)
+
+    if no_axiom_pat.search(flat):
+        # Even if reported as no axioms, verify no forbidden hints in raw output
+        forbidden_in_raw = [a for a in FORBIDDEN_EXACT if a in flat]
+        if forbidden_in_raw:
+            info["forbidden"] = forbidden_in_raw
+            return "REJECTED_FORBIDDEN_AXIOM", 1, info
         return "ACCEPTED_PURE_PROOF", 0, info
 
-    m = AXIOM_LIST_PAT.search(flat)
+    m = axiom_list_pat.search(flat)
     if not m:
-        info["error"] = "unparseable #print axioms output; refusing to accept"
+        info["error"] = f"unparseable or target-mismatched #print axioms output for target '{theorem}'; refusing to accept"
         return "INDETERMINATE", 2, info
 
-    axioms = [a.strip() for a in m.group(1).split(",") if a.strip()]
+    raw_axioms = m.group(1).strip()
+    axioms = [a.strip() for a in raw_axioms.split(",") if a.strip()]
     info["axioms"] = axioms
+
     forbidden = [a for a in axioms if a in FORBIDDEN_EXACT or FORBIDDEN_HINT.search(a)]
     custom = [a for a in axioms if a not in ALLOWED and a not in forbidden]
+
     if forbidden:
         info["forbidden"] = forbidden
         return "REJECTED_FORBIDDEN_AXIOM", 1, info
     if custom:
         info["custom"] = custom
         return "REJECTED_CUSTOM_AXIOM", 1, info
-    return "ACCEPTED_PURE_PROOF", 0, info
+
+    return ("ACCEPTED_PURE_PROOF" if not axioms else "ACCEPTED_STANDARD_AXIOMS"), 0, info
+
+
+def run_controls() -> bool:
+    """Runs bidirectional self-test control suite without invoking Lean."""
+    cases = [
+        # (name, rc, output, expected_verdict, expected_code)
+        (
+            "pure proof with no axioms",
+            0,
+            "'Erdos834.erdos_834.parts.ii' does not depend on any axioms",
+            "ACCEPTED_PURE_PROOF",
+            0,
+        ),
+        (
+            "standard axioms (propext, Quot.sound)",
+            0,
+            "'Erdos834.erdos_834.parts.ii' depends on axioms: [propext, Quot.sound]",
+            "ACCEPTED_STANDARD_AXIOMS",
+            0,
+        ),
+        (
+            "multiline standard axioms with whitespace",
+            0,
+            "'Erdos834.erdos_834.parts.ii' depends on axioms: [\n  propext,\n  Classical.choice\n]",
+            "ACCEPTED_STANDARD_AXIOMS",
+            0,
+        ),
+        (
+            "target mismatch (other theorem without axioms)",
+            0,
+            "'OtherTheorem' does not depend on any axioms",
+            "INDETERMINATE",
+            2,
+        ),
+        (
+            "target mismatch (other theorem with axioms)",
+            0,
+            "'OtherTheorem' depends on axioms: [propext]",
+            "INDETERMINATE",
+            2,
+        ),
+        (
+            "compiler warning uses sorry",
+            0,
+            "warning: declaration uses 'sorry'\n'Erdos834.erdos_834.parts.ii' depends on axioms: [sorryAx]",
+            "REJECTED_FORBIDDEN_AXIOM",
+            1,
+        ),
+        (
+            "forbidden axiom sorryAx",
+            0,
+            "'Erdos834.erdos_834.parts.ii' depends on axioms: [propext, sorryAx]",
+            "REJECTED_FORBIDDEN_AXIOM",
+            1,
+        ),
+        (
+            "forbidden axiom trustCompiler",
+            0,
+            "'Erdos834.erdos_834.parts.ii' depends on axioms: [Lean.trustCompiler]",
+            "REJECTED_FORBIDDEN_AXIOM",
+            1,
+        ),
+        (
+            "custom axiom rejected",
+            0,
+            "'Erdos834.erdos_834.parts.ii' depends on axioms: [propext, MySecretAxiom]",
+            "REJECTED_CUSTOM_AXIOM",
+            1,
+        ),
+        (
+            "elaboration failure (rc=1)",
+            1,
+            "error: unknown identifier 'Erdos834.erdos_834.parts.ii'",
+            "ELABORATION_FAILED",
+            1,
+        ),
+        (
+            "empty unparseable output",
+            0,
+            "random text without declaration name",
+            "INDETERMINATE",
+            2,
+        ),
+    ]
+
+    all_ok = True
+    print("=== RUNNING AUDIT_AXIOM CONTROLS ===")
+    for label, rc, out, exp_verdict, exp_code in cases:
+        verdict, code, _ = classify("Erdos834.erdos_834.parts.ii", rc, out, module="Erdos834")
+        passed = (verdict == exp_verdict and code == exp_code)
+        if not passed:
+            all_ok = False
+        status = "PASS" if passed else "FAIL"
+        print(f"[{status}] {label:45s} -> {verdict} (exit {code}, expected {exp_verdict}/{exp_code})")
+    return all_ok
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Audit Lean theorem axioms (fail-closed)")
+    ap = argparse.ArgumentParser(description="Audit Lean theorem axioms (fail-closed, target-bound)")
     ap.add_argument("--module", default="Erdos834")
-    ap.add_argument("--theorem", required=True)
+    ap.add_argument("--theorem", default="Erdos834.erdos_834.parts.ii")
+    ap.add_argument("--run-controls", action="store_true", help="Run self-test control suite")
     args = ap.parse_args()
 
+    if args.run_controls:
+        ok = run_controls()
+        sys.exit(0 if ok else 1)
+
     rc, output = run(args.module, args.theorem)
-    verdict, code, info = classify(args.theorem, rc, output)
+    verdict, code, info = classify(args.theorem, rc, output, module=args.module)
 
     print(f"[raw] {info['raw'][:600]}")
     print("=== AUDIT RESULT ===")

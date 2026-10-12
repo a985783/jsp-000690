@@ -41,13 +41,57 @@ def extract_statement(text: str, name: str) -> str:
     return stmt
 
 
+def run_controls() -> bool:
+    """Runs self-test control suite for statement extraction and hash integrity."""
+    print("=== RUNNING CHECK_STATEMENT_MATCH CONTROLS ===")
+    sample = """
+theorem erdos_834.parts.ii :
+    answer(True) ↔ ∃ (n : ℕ) (H : Finset (Finset (Fin n))),
+    H.IsUniform 3 := by
+  sorry
+"""
+    all_ok = True
+
+    # Control 1: Correct extraction
+    stmt = extract_statement(sample, "erdos_834.parts.ii")
+    c1_pass = (stmt == "answer(True) ↔ ∃ (n : ℕ) (H : Finset (Finset (Fin n))), H.IsUniform 3")
+    print(f"[{'PASS' if c1_pass else 'FAIL'}] statement extraction                  -> ok={c1_pass}")
+    if not c1_pass:
+        all_ok = False
+
+    # Control 2: Missing theorem raises SystemExit
+    c2_pass = False
+    try:
+        extract_statement(sample, "non_existent_thm")
+    except SystemExit:
+        c2_pass = True
+    print(f"[{'PASS' if c2_pass else 'FAIL'}] missing theorem rejected              -> caught={c2_pass}")
+    if not c2_pass:
+        all_ok = False
+
+    # Control 3: Hash mismatch detection
+    fake_sha = "0000000000000000000000000000000000000000000000000000000000000000"
+    actual_sha = hashlib.sha256(CHALLENGE_FILE.read_bytes()).hexdigest()
+    c3_pass = (actual_sha == CHALLENGE_SHA256 and fake_sha != actual_sha)
+    print(f"[{'PASS' if c3_pass else 'FAIL'}] challenge file pin match             -> match={c3_pass}")
+    if not c3_pass:
+        all_ok = False
+
+    return all_ok
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--challenge-file", default=str(CHALLENGE_FILE))
     ap.add_argument("--challenge-sha", default=CHALLENGE_SHA256)
     ap.add_argument("--challenge", default=CHALLENGE_THEOREM)
     ap.add_argument("--ours", default=OURS)
+    ap.add_argument("--run-controls", action="store_true", help="Run self-test control suite")
     args = ap.parse_args()
+
+    if args.run_controls:
+        ok = run_controls()
+        sys.exit(0 if ok else 1)
 
     cf = Path(args.challenge_file)
     if not cf.exists():
@@ -60,15 +104,23 @@ def main() -> None:
         )
 
     stmt = extract_statement(cf.read_text(), args.challenge)
-    src = ("".join(f"import {m}\n" for m in IMPORTS) + "\n"
-           + "-- statement text machine-extracted from the pinned challenge file\n"
-           + f"example : {stmt} := @{args.ours}\n")
+    src = (
+        "".join(f"import {m}\n" for m in IMPORTS)
+        + "\n"
+        + "-- statement text machine-extracted from the pinned challenge file\n"
+        + f"example : {stmt} := @{args.ours}\n"
+    )
     with tempfile.NamedTemporaryFile("w", suffix=".lean", delete=False) as fh:
         fh.write(src)
         tmp = Path(fh.name)
     try:
-        res = subprocess.run(["lake", "env", "lean", str(tmp)],
-                             cwd=ROOT, capture_output=True, text=True, timeout=3600)
+        res = subprocess.run(
+            ["lake", "env", "lean", str(tmp)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=3600,
+        )
         out = (res.stdout + res.stderr).strip()
     finally:
         tmp.unlink(missing_ok=True)

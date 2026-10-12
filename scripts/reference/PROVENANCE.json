@@ -1,0 +1,32 @@
+{
+  "upstream_repository": "https://github.com/google-deepmind/formal-conjectures",
+  "upstream_commit": "2067d8bb82058f40ccbd20a14fb94502434ea9eb",
+  "upstream_commit_date": "2026-04-12",
+  "license": "Apache-2.0",
+  "copyright": "Copyright 2026 The Formal Conjectures Authors.",
+  "vendored_reference": {
+    "path": "scripts/reference/upstream_definitions.lean",
+    "sha256": "2291e166792fabc70f4961a757d0561becec3d2721fda287dfe6b4732bbc66f6"
+  },
+  "source_files": [
+    {
+      "path": "FormalConjecturesForMathlib/Combinatorics/Hypergraph/Finite.lean",
+      "sha256": "0823fba654c8fd849c821338e6624aefac6935a92836523dde9eb6524874949a",
+      "transplanted_definitions": [
+        "Finset.IsUniform",
+        "Finset.IsProperHypergraphColoring",
+        "Finset.HypergraphColorable",
+        "Finset.HasHypergraphChromaticNumber",
+        "Finset.hypergraphDegree"
+      ]
+    },
+    {
+      "path": "FormalConjectures/ErdosProblems/834.lean",
+      "sha256": "626258ec807262bd2a43bb6e6a923273fbdc85443e170fa703d5b33efc55583f",
+      "challenge_theorems": [
+        "erdos_834.parts.i",
+        "erdos_834.parts.ii"
+      ]
+    }
+  ]
+}
