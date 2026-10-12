@@ -168,7 +168,7 @@ contribution, owned by your submitting account or an organization.
 ```json
 [
   {
-    "repository": "[[FILL: https://github.com/qingsongcui/jsp-000690-lean]]",
+    "repository": "[[FILL: https://github.com/a985783/jsp-000690]]",
     "branch": "main",
     "commit": "[[FILL: full 40-character commit SHA of the submitted revision]]"
   }
@@ -299,7 +299,7 @@ We recommend the `lean-verify` skill; reports and logs are optional here.
   readings; the chromatic existence answer and the explicit 9-vertex,
   22-edge construction are Li's (Theorem 1.2; Theorem 4.1 and display (5)).
   The submitter claims **no** mathematical credit.
-- Lean formalization author(s) and contribution, if applicable: **`qingsongcui`** —
+- Lean formalization contributor account, if applicable: **`a985783`** —
   the submitter's GitHub account — prepared this independent Lean 4 formalization
   of the chromatic reading in the repository named under "Proof submission".
   **AI assistance is disclosed:** this formalization was produced with the help of
@@ -313,9 +313,9 @@ We recommend the `lean-verify` skill; reports and logs are optional here.
   evidence connecting your account to the claimed proof files/theorems (such as
   merged PRs, attributable changes or project authorship records). Explain
   mismatches between authors, accounts and proposed credits:
-  the repository is owned by the submitting account `qingsongcui`, and the
-  submitted commit is authored under that account's identity. No organisation
-  repository is involved. The submitter explicitly notes the following potential
+  the intended repository owner and submitting account is `a985783`.
+  Local commits currently use `omp <omp@localhost>`, not the account holder's
+  verified identity. No organisation repository is involved. Potential
   mismatches, which are for maintainers to weigh:
   * the underlying mathematical result and witness are Li's, not the submitter's;
   * an **earlier** same-question public source is known to exist
@@ -349,7 +349,7 @@ We recommend the `lean-verify` skill; reports and logs are optional here.
 
 | # | placeholder | where | what is needed |
 |---|---|---|---|
-| F1 | `[[FILL: repository URL]]` | Proof submission / Reproduction | public GitHub repo under the `qingsongcui` account containing this exact commit |
+| F1 | `[[FILL: repository URL]]` | Proof submission / Reproduction | public GitHub repo under the `a985783` account containing this exact commit |
 | F2 | `[[FILL: branch]]` | Proof submission | the branch the commit lives on |
 | F3 | `[[FILL: full 40-character commit SHA]]` | several places | final local SHA supplied in the delivery report; publish and select that exact revision only after explicit approval |
 | F4 | `[[FILL: the submitter's real name]]` | Attribution | legal name for the Lean formalization credit. **Unknown — must be confirmed by the user. Do not fabricate.** |

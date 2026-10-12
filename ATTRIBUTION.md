@@ -69,7 +69,7 @@ Portions of this codebase adapt specifications and definitions from the
 
 ## 4. Formalization Authorship and AI Disclosure
 
-* **Formalization Submitter:** GitHub account [`@qingsongcui`](https://github.com/qingsongcui).
+* **Formalization Submitter:** GitHub account [`@a985783`](https://github.com/a985783), selected by the account holder.
   Real name is unconfirmed by the account holder and is deliberately omitted to
   avoid fabrication.
 * **AI Assistance Disclosure:**

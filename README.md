@@ -72,7 +72,7 @@ Every property is discharged by kernel-checked finite evaluation (`decide`).
 * **Challenge Specification:** `challenge/Erdos834.lean` is pinned to commit
   `2067d8bb82058f40ccbd20a14fb94502434ea9eb` (SHA256: `626258ec807262bd2a43bb6e6a923273fbdc85443e170fa703d5b33efc55583f`)
   and used solely for statement correspondence validation.
-* **Formalization Submitter:** GitHub account [`@qingsongcui`](https://github.com/qingsongcui).
+* **Formalization Submitter:** GitHub account [`@a985783`](https://github.com/a985783), selected by the account holder.
   Real name is unconfirmed by the account holder and is omitted here to avoid
   fabrication.
 * **AI Assistance Disclosure:** Proof search structuring, finite instance

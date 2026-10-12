@@ -5,7 +5,7 @@ posted, commented on, or e-mailed. This file and `SUBMISSION.md` are the only
 files created.**
 
 * Audit date: 2026-10-12 (UTC).
-* Auditor: local worker agent preparing a submission for GitHub account `qingsongcui`.
+* Auditor: local worker agent preparing the proof package; the user later selected `a985783` as the submitting account.
 * Evidence tooling: `gh api` (authenticated as `qingsongcui`), `git`, `curl`.
 * Machine snapshots of every artefact quoted below are cached under
   `delivery-jsp-000690/.audit/` (not part of the submission).
@@ -353,7 +353,7 @@ pinned main SHA no submission has been accepted: the catalog still reads
 `awards/README.md`. **No source has been recorded yet, and no priority has been
 adjudicated.**
 
-## 7. Priority assessment for `qingsongcui` (risk-based, not adjudicated)
+## 7. Priority assessment for the submitting account (risk-based, not adjudicated)
 
 Applying the pinned rules to the **static** facts, with all conclusions framed as
 risk rather than as a settled determination:
@@ -396,7 +396,7 @@ that, a submission is not justified by the rules as pinned here.
 
 ## 9. Open / unresolved items (for the user or maintainers)
 
-1. **Real name.** `qingsongcui` is only a GitHub handle. The award process requires
+1. **Real name.** `a985783` is only a GitHub handle. The award process requires
    an identity-verification e-mail; the draft intentionally leaves the legal name
    blank. *Do not invent one.*
 2. **plby authorship.** The file header credits `Codex`/`GPT-5.6 Sol`; the committer
