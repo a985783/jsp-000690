@@ -90,8 +90,10 @@ Portions of this codebase adapt specifications and definitions from the
 * **Intended Submission Role:** Formalization contributor only, not mathematical
   solver. This is a local preparation, not a submitted award claim.
 * **Publication Status:** The account holder authorized the public proof repository
-  [`a985783/jsp-000690`](https://github.com/a985783/jsp-000690) and a catalog-reference
-  PR. No award claim, identity-verification email, or payment details are submitted.
+  [`a985783/jsp-000690`](https://github.com/a985783/jsp-000690) and catalog-reference
+  [PR #5023](https://github.com/TheJustinSunPrize/awards/pull/5023), now open.
+  Selected proof revision: `2378a9cc1f2c5aa62bcd233288c64036d96bc493`.
+  No award claim, identity-verification email, or payment details are submitted.
 * **Priority Due Diligence vs. Official Acceptance:** Any internal review or
   audit of existing pull requests on `TheJustinSunPrize/awards` represents
   independent due diligence to understand existing public submissions.

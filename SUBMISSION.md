@@ -2,6 +2,10 @@
 
 **Historical draft, not the final PR body.** The account holder subsequently
 authorized publication under `a985783` and a catalog-reference PR.
+The final submitted body is available in
+[PR #5023](https://github.com/TheJustinSunPrize/awards/pull/5023);
+its selected proof revision is `2378a9cc1f2c5aa62bcd233288c64036d96bc493`.
+The fill-in fields below belong to the historical draft, not the submitted PR.
 `PRIORITY-AUDIT.md` §1 and §7: a **plausible earlier same-question public source**
 exists — a file was already present in a public repository at a commit whose
 committer date is 2026-08-17, and by September two open catalog PRs cited it with

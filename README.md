@@ -194,7 +194,10 @@ $ echo $?
   recorded.
 * **Publication Status:** The account holder authorized publication under
   [`a985783/jsp-000690`](https://github.com/a985783/jsp-000690).
-  The proof repository is public; a catalog-reference PR is being prepared.
+  Catalog-reference [PR #5023](https://github.com/TheJustinSunPrize/awards/pull/5023)
+  is open, submitted by `a985783`. Its selected proof revision is
+  `2378a9cc1f2c5aa62bcd233288c64036d96bc493`, independently cloned from GitHub
+  and successfully checked by the complete reproduction script.
   No award claim, identity-verification email, or payment details are submitted.
 * **Priority Audit Disclaimer:** Internal auditing of prior submissions on
   `TheJustinSunPrize/awards` is conducted purely for due-diligence awareness.
