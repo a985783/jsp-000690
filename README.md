@@ -192,9 +192,10 @@ $ echo $?
 * **Completeness:** The formalization addresses the exact yes/no question of the
   problem catalogue, establishing a complete formal answer to the problem as
   recorded.
-* **Local Preparation Status:** This package is prepared locally for validation.
-  No pull request has been opened, no commits have been published to external
-  remotes, and no contact with the prize organizers has been made.
+* **Publication Status:** The account holder authorized publication under
+  [`a985783/jsp-000690`](https://github.com/a985783/jsp-000690).
+  The proof repository is public; a catalog-reference PR is being prepared.
+  No award claim, identity-verification email, or payment details are submitted.
 * **Priority Audit Disclaimer:** Internal auditing of prior submissions on
   `TheJustinSunPrize/awards` is conducted purely for due-diligence awareness.
   The presence or count of prior PRs does not represent an official assessment

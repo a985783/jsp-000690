@@ -1,7 +1,7 @@
 # SUBMISSION — JSP-000690 (Erdős #834), Lean formalization reference
 
-**Status: DRAFT, NOT SUBMITTED. No external action has been taken. Do not open a
-PR or issue with this text unless the user explicitly approves.** See
+**Historical draft, not the final PR body.** The account holder subsequently
+authorized publication under `a985783` and a catalog-reference PR.
 `PRIORITY-AUDIT.md` §1 and §7: a **plausible earlier same-question public source**
 exists — a file was already present in a public repository at a commit whose
 committer date is 2026-08-17, and by September two open catalog PRs cited it with

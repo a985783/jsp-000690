@@ -1,8 +1,9 @@
 # PRIORITY-AUDIT — JSP-000690 (Erdős #834)
 
-**Local, pre-submission audit. No external action was taken: nothing was pushed,
-posted, commented on, or e-mailed. This file and `SUBMISSION.md` are the only
-files created.**
+**Historical pre-submission audit. No external action was taken during this audit.**
+The account holder subsequently authorized publication under
+[`a985783/jsp-000690`](https://github.com/a985783/jsp-000690) and a catalog-reference
+PR with explicit disclosure of prior work. This audit is not an award ruling.
 
 * Audit date: 2026-10-12 (UTC).
 * Auditor: local worker agent preparing the proof package; the user later selected `a985783` as the submitting account.
